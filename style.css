@@ -1,0 +1,296 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* body {
+  font-family: Arial, Helvetica, sans-serif;
+  background: #edf2f8;
+  min-height: 100vh;
+  padding: 20px;
+} */
+ 
+body {
+  font-family: 'JetBrains Mono', Arial, Helvetica, sans-serif;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  
+  /* Màu nền gốc: Xanh lam cực nhạt */
+  background-color: #aad4f8; 
+  position: relative;
+  z-index: 0;
+}
+
+/* Tạo 2 khối ánh sáng khổng lồ nằm chìm dưới nền */
+body::before,
+body::after {
+  content: "";
+  position: fixed; /* Cố định trên màn hình, không làm lỗi cuộn trang */
+  width: 60vw;
+  height: 60vw;
+  border-radius: 50%;
+  z-index: -1;
+  filter: blur(90px); /* Làm nhòe hoàn toàn tạo cảm giác ánh sáng */
+  opacity: 0.8;
+  animation: auroraMesh 15s infinite alternate ease-in-out;
+}
+
+/* Khối ánh sáng 1: Xanh dương nhạt */
+body::before {
+  background: radial-gradient(circle, #3970c9 0%, rgba(0, 98, 255, 0.425) 70%);
+  top: -10%;
+  left: -10%;
+}
+
+/* Khối ánh sáng 2: Xanh lơ (Cyan) */
+body::after {
+  background: radial-gradient(circle, #00aeff 0%, rgba(0, 174, 255, 0) 70%);
+  bottom: -10%;
+  right: -10%;
+  animation-duration: 20s; /* Chạy lệch nhịp với khối 1 để tự nhiên hơn */
+}
+
+/* Hiệu ứng trôi nổi bồng bềnh */
+@keyframes auroraMesh {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(15vw, 15vh) scale(1.3); }
+}
+/* =========================
+   LAYOUT CHÍNH
+========================= */
+.app {
+  width: 100%;
+  max-width: 1400px;
+  margin: auto;
+  display: grid;
+  grid-template-columns: 360px 1fr; /* Mặc định máy tính: Trái 360px, Phải chiếm phần còn lại */
+  gap: 24px;
+  align-items: start;
+}
+
+/* RESPONSIVE CHO ĐIỆN THOẠI/TABLET */
+@media (max-width: 992px) {
+  .app {
+    grid-template-columns: 1fr; /* Chuyển thành 1 cột dọc */
+  }
+}
+
+/* =========================
+   BẢNG ĐIỀU KHIỂN
+========================= */
+.control-panel {
+  background: rgba(255, 255, 255, 0.9);
+  /* padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08); */
+  backdrop-filter: blur(10px); 
+  -webkit-backdrop-filter: blur(10px); /* Cho Safari */
+  
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+}
+
+.control-panel h1 {
+  margin-bottom: 20px;
+  color: #0b4f9f;
+  font-size: 24px;
+}
+
+.field {
+  margin-bottom: 15px;
+}
+
+.field label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+  color: #333;
+}
+
+.field input,
+.field textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccd6e3;
+  border-radius: 8px;
+  font-size: 15px;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.field input:focus,
+.field textarea:focus {
+  border-color: #0b4f9f;
+}
+
+.field textarea {
+  min-height: 130px;
+  resize: vertical;
+}
+
+#downloadBtn {
+  width: 100%;
+  border: none;
+  background: #d91f32;
+  color: white;
+  padding: 14px;
+  font-size: 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.3s;
+}
+
+#downloadBtn:hover {
+  background: #b81729;
+}
+
+#downloadBtn:disabled {
+  background: #aaa;
+  cursor: not-allowed;
+}
+
+/* =========================
+   KHU VỰC PREVIEW (WRAPPER)
+========================= */
+.preview-section {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  overflow: hidden;
+}
+
+#previewWrapper {
+  position: relative;
+  /* width và height sẽ được JavaScript tự động tính toán để giữ không gian */
+  overflow: hidden;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+/* =========================
+   THẺ THÔNG ĐIỆP GỐC (LUÔN CỐ ĐỊNH 1600x900)
+========================= */
+.message-card {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1600px;
+  height: 900px;
+  transform-origin: top left;
+  background-color: #ffffff;
+  overflow: hidden;
+}
+
+/* CÁC THÀNH PHẦN BÊN TRONG THẺ */
+.avatar-box {
+  position: absolute;
+  top: 25%;
+  left: 7.3%;
+  width: 25%;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #f0f0f0;
+  border: 10px solid #ffffff; 
+  box-shadow: 0 8px 24px rgba(0,0,0,0.25); 
+  touch-action: none;
+  cursor: grab;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatar-box:active {
+  cursor: grabbing;
+}
+
+.avatar-box img {
+  position: absolute;
+  width: auto;
+  height: auto;
+  max-width: none;
+  max-height: none;
+  user-select: none;
+  pointer-events: none;
+  transform-origin: center;
+}
+
+.name-preview {
+  position: absolute;
+  top: 70%;
+  left: 5.5%;
+  width: 29%;
+  text-align: center;
+  font-family: "Kanit", sans-serif;
+  font-size: 40px; /* Dùng kích thước tĩnh vì toàn bộ card sẽ được scale tỷ lệ */
+  font-weight: 800;
+  color: #ff0000;
+  -webkit-text-stroke: 1px #ffffff;
+  text-shadow: 
+        3px 3px 3px rgba(255, 255, 255, 0.5);
+}
+
+.unit-preview {
+  position: absolute;
+  top: 76%;
+  left: 5.5%;
+  width: 29%;
+  text-align: center;
+  font-family: "Kanit", sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: #0077ff;
+  -webkit-text-stroke: 0.5px #ffffff;
+  text-shadow: 
+        2px 2px 2px rgba(255, 255, 255, 0.5);
+  line-height: 1.4;
+}
+.message-box {
+  position: absolute;
+  top: 28%;
+  left: 38.6%;
+  width: 57%;
+  height: 65.5%;
+  border-radius: 25px;
+  padding: 2px;
+}
+
+.message-preview {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-family: 'Montserrat', sans-serif;
+  color: #0073ff;
+  border-radius: 23px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow: hidden;
+  line-height: 1.45;
+  font-weight: bold;
+  padding: 20px;
+}
+/* THUỘC TÍNH CHO ẢNH NỀN MỚI */
+.bg-template {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Đảm bảo ảnh nền phủ kín khung 1600x900 */
+  z-index: 0; /* Ép ảnh nền nằm dưới cùng */
+}
+
+/* Nâng các lớp nội dung lên trên ảnh nền */
+.avatar-box, .name-preview, .unit-preview, .message-box {
+  z-index: 1;
+}

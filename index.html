@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Thông điệp Đại hội</title>
+  <link rel="icon" href="444.png" type="image/png">
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+</head>
+<body>
+
+  <main class="app">
+    <!-- CỘT 1: BẢNG ĐIỀU KHIỂN (FORM) -->
+    <section class="control-panel">
+      <h1>Gửi thông điệp Đại hội</h1>
+
+      <div class="field">
+        <label>Ảnh đại diện</label>
+        <input type="file" id="avatarInput" accept="image/*">
+      </div>
+
+      <div class="field">
+        <label>Họ và tên</label>
+        <input type="text" id="nameInput" placeholder="Nhập họ tên">
+      </div>
+
+      <div class="field">
+        <label>Đơn vị</label>
+        <input type="text" id="unitInput" placeholder="Nhập đơn vị">
+      </div>
+
+      <div class="field">
+        <label>Thông điệp</label>
+        <textarea id="messageInput" placeholder="Nhập thông điệp gửi Đại hội"></textarea>
+      </div>
+
+      <button id="downloadBtn">Tải ảnh xuống</button>
+    </section>
+
+    <!-- CỘT 2: KHU VỰC HIỂN THỊ (PREVIEW) -->
+    <!-- CỘT 2: KHU VỰC HIỂN THỊ (PREVIEW) -->
+<section class="preview-section">
+  <div id="previewWrapper">
+    <div id="previewCard" class="message-card">
+      
+      <!-- CÁCH SỬA LỖI MỜ: DÙNG THẺ IMG ĐỂ CHỨA ẢNH NỀN THAY VÌ CSS -->
+      <img class="bg-template" src="nen.jpg" alt="background" crossorigin="anonymous" />
+      
+      <!-- ẢNH ĐẠI DIỆN -->
+      <div class="avatar-box" id="avatarBox">
+        <img id="avatarPreview" src="https://via.placeholder.com/500" alt="avatar" crossorigin="anonymous" />
+      </div>
+      
+      <!-- HỌ TÊN -->
+      <div id="namePreview" class="name-preview"></div>
+
+      <!-- ĐƠN VỊ -->
+      <div id="unitPreview" class="unit-preview"></div>
+
+      <!-- THÔNG ĐIỆP -->
+      <div class="message-box">
+        <div id="messagePreview" class="message-preview"></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
