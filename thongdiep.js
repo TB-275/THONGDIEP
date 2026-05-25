@@ -108,11 +108,15 @@ avatarInput.addEventListener("change", (e) => {
 });
 
 /* =========================
-   5. XỬ LÝ KÉO THẢ AVATAR (DRAG & DROP)
+   5. XỬ LÝ KÉO THẢ VÀ ZOOM AVATAR (DRAG & ZOOM)
 ========================= */
 let isDragging = false;
 let lastMouseX = 0;
 let lastMouseY = 0;
+
+// Biến hỗ trợ chạm 2 ngón tay (Pinch-to-zoom)
+let initialPinchDistance = null;
+let initialAvatarScale = 1;
 
 function updateAvatarTransform() {
   avatarPreview.style.transform = `translate(${currentX}px, ${currentY}px) scale(${avatarScale})`;
@@ -127,7 +131,7 @@ function handleDragStart(clientX, clientY) {
 function handleDragMove(clientX, clientY) {
   if (!isDragging) return;
   
-  // Thuật toán: Chia quãng đường kéo cho currentTemplateScale để tốc độ kéo đồng bộ với vị trí chuột dù ảnh bị thu nhỏ
+  // Thuật toán: Chia quãng đường kéo cho currentTemplateScale để tốc độ kéo đồng bộ
   const deltaX = (clientX - lastMouseX) / currentTemplateScale;
   const deltaY = (clientY - lastMouseY) / currentTemplateScale;
 
@@ -144,25 +148,71 @@ function handleDragEnd() {
   isDragging = false;
 }
 
-// Chuột trên Máy tính
+// ----------------------------------------
+// A. THAO TÁC TRÊN MÁY TÍNH (CHUỘT)
+// ----------------------------------------
 avatarBox.addEventListener("mousedown", (e) => handleDragStart(e.clientX, e.clientY));
 window.addEventListener("mousemove", (e) => handleDragMove(e.clientX, e.clientY));
 window.addEventListener("mouseup", handleDragEnd);
 
-// Cảm ứng trên Điện thoại
+// Phóng to/ Thu nhỏ bằng con lăn chuột
+avatarBox.addEventListener("wheel", (e) => {
+  e.preventDefault(); // Ngăn cuộn trang web
+  const zoomStep = 0.05; // Tốc độ zoom mỗi lần lăn
+  
+  if (e.deltaY < 0) {
+    avatarScale += zoomStep; // Lăn lên -> Phóng to
+  } else {
+    avatarScale = Math.max(0.1, avatarScale - zoomStep); // Lăn xuống -> Thu nhỏ (tối thiểu 0.1)
+  }
+  updateAvatarTransform();
+}, { passive: false });
+
+// ----------------------------------------
+// B. THAO TÁC TRÊN ĐIỆN THOẠI (CẢM ỨNG)
+// ----------------------------------------
 avatarBox.addEventListener("touchstart", (e) => {
-  if (e.touches.length > 0) handleDragStart(e.touches[0].clientX, e.touches[0].clientY);
+  if (e.touches.length === 1) {
+    // Chạm 1 ngón -> Kéo thả
+    handleDragStart(e.touches[0].clientX, e.touches[0].clientY);
+  } else if (e.touches.length === 2) {
+    // Chạm 2 ngón -> Bắt đầu tính toán Zoom
+    isDragging = false; // Hủy trạng thái kéo thả
+    initialPinchDistance = Math.hypot(
+      e.touches[0].clientX - e.touches[1].clientX,
+      e.touches[0].clientY - e.touches[1].clientY
+    );
+    initialAvatarScale = avatarScale;
+  }
 }, { passive: false });
 
 window.addEventListener("touchmove", (e) => {
-  if (!isDragging) return;
-  // Ngăn cuộn trang khi đang kéo ảnh
-  e.preventDefault();
-  handleDragMove(e.touches[0].clientX, e.touches[0].clientY);
+  if (e.touches.length === 1 && isDragging) {
+    // Di chuyển 1 ngón
+    e.preventDefault();
+    handleDragMove(e.touches[0].clientX, e.touches[0].clientY);
+  } else if (e.touches.length === 2 && initialPinchDistance) {
+    // Di chuyển 2 ngón tay -> Thực hiện Zoom
+    e.preventDefault();
+    const currentDistance = Math.hypot(
+      e.touches[0].clientX - e.touches[1].clientX,
+      e.touches[0].clientY - e.touches[1].clientY
+    );
+    
+    const scaleFactor = currentDistance / initialPinchDistance;
+    avatarScale = Math.max(0.1, initialAvatarScale * scaleFactor); // Giới hạn không cho zoom quá nhỏ
+    updateAvatarTransform();
+  }
 }, { passive: false });
 
-window.addEventListener("touchend", handleDragEnd);
-
+window.addEventListener("touchend", (e) => {
+  if (e.touches.length < 2) {
+    initialPinchDistance = null; // Thả 1 trong 2 ngón tay ra thì dừng zoom
+  }
+  if (e.touches.length === 0) {
+    handleDragEnd(); // Thả hết tay ra thì dừng kéo
+  }
+});
 /* =========================
    6. TẢI ẢNH (HTML2CANVAS)
 ========================= */
