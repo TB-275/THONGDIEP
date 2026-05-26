@@ -18,13 +18,12 @@ body {
   justify-content: center;
   align-items: center;
   padding: 20px;
-  
+
   /* Màu nền gốc: Xanh lam cực nhạt */
   background-color: #aad4f8; 
   position: relative;
   z-index: 0;
 }
-
 /* Tạo 2 khối ánh sáng khổng lồ nằm chìm dưới nền */
 body::before,
 body::after {
