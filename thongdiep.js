@@ -167,7 +167,6 @@ avatarBox.addEventListener("wheel", (e) => {
   }
   updateAvatarTransform();
 }, { passive: false });
-
 // ----------------------------------------
 // B. THAO TÁC TRÊN ĐIỆN THOẠI (CẢM ỨNG)
 // ----------------------------------------
