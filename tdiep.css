@@ -177,7 +177,7 @@ body::after {
 ========================= */
 .message-card {
   position: absolute;
-  top: 0;
+  top:0 ;
   left: 0;
   width: 1600px;
   height: 900px;
@@ -252,12 +252,14 @@ body::after {
 }
 .message-box {
   position: absolute;
-  top: 28%;
-  left: 38.6%;
+  top: 29%;
+  left: 38.5%;
   width: 57%;
   height: 65.5%;
   border-radius: 25px;
   padding: 2px;
+  hyphens: auto;
+  text-align: justify; /* Căn đều nội dung 2 bên */
 }
 
 .message-preview {
