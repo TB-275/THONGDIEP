@@ -19,30 +19,48 @@ let avatarScale = 1;          // Tỷ lệ phóng to/thu nhỏ của riêng ản
 let currentX = 0;             // Tọa độ X của ảnh đại diện
 let currentY = 0;             // Tọa độ Y của ảnh đại diện
 
+
 /* =========================
    1. CẬP NHẬT VĂN BẢN (REAL-TIME)
 ========================= */
+function autoFitText(element, maxFont, minFont = 10) {
+  let fontSize = maxFont;
+  element.style.fontSize = fontSize + "px";
+  while (
+    (element.scrollWidth > element.clientWidth ||
+     element.scrollHeight > element.clientHeight) &&
+    fontSize > minFont
+  ) {
+    fontSize--;
+    element.style.fontSize = fontSize + "px";
+  }
+}
+/* ===== NAME ===== */
 nameInput.addEventListener("input", () => {
-  namePreview.innerText = nameInput.value || "Họ và tên";
+  namePreview.innerText =
+    nameInput.value || "Họ và tên";
+  autoFitText(namePreview, 40, 16);
 });
-
+/* ===== UNIT ===== */
 unitInput.addEventListener("input", () => {
-  unitPreview.innerText = unitInput.value || "Đơn vị";
+  unitPreview.innerText =
+    unitInput.value || "Đơn vị";
+  autoFitText(unitPreview, 22, 10);
 });
-
+/* ===== MESSAGE ===== */
 messageInput.addEventListener("input", () => {
-  messagePreview.innerText = messageInput.value || "CHÚC ĐẠI HỘI THÀNH CÔNG TỐT ĐẸP!";
+  messagePreview.innerText =
+    messageInput.value ||
+    "CHÚC ĐẠI HỘI THÀNH CÔNG TỐT ĐẸP!";
   autoResizeMessage();
 });
-
-// Chạy khởi tạo text mặc định
+/* Khởi tạo */
 nameInput.dispatchEvent(new Event("input"));
 unitInput.dispatchEvent(new Event("input"));
 messageInput.dispatchEvent(new Event("input"));
 
-/* =========================
-   2. XỬ LÝ AUTO FIT TEMPLATE
-========================= */
+
+
 // Hàm này giúp Card (1600x900) co giãn vừa khít với màn hình hiện tại mà không làm vỡ layout
 function fitTemplate() {
   const containerWidth = previewWrapper.parentElement.clientWidth;
@@ -67,13 +85,20 @@ fitTemplate();
 ========================= */
 function autoResizeMessage() {
   let fontSize = 58;
-  messagePreview.style.fontSize = fontSize + "px";
-
-  // Giảm font-size dần cho đến khi text không bị tràn ra ngoài khung
-  while (messagePreview.scrollHeight > messagePreview.clientHeight && fontSize > 14) {
+  messagePreview.style.fontSize =
+    fontSize + "px";
+  while (
+    (messagePreview.scrollHeight >
+      messagePreview.clientHeight ||
+     messagePreview.scrollWidth >
+      messagePreview.clientWidth) &&
+    fontSize > 18
+  ) {
     fontSize--;
-    messagePreview.style.fontSize = fontSize + "px";
+    messagePreview.style.fontSize =
+      fontSize + "px";
   }
+
 }
 
 /* =========================
